@@ -1,5 +1,26 @@
-import sys
-print(f"python {sys.version}")
-import numpy as np
-a=np.array([1,2,3])
-print(f"vector: {a} ,dot prod= {np.dot(a,a)}")
+import time
+
+import torch
+
+size=5000
+
+#random normal
+a_cpu=torch.randn(size,size)
+b_cpu=torch.randn(size,size)
+
+start=time.time()
+# @ is for cpu multiplication
+c_cpu= a_cpu @ b_cpu
+cpu_time=time.time()-start
+print(f"CPU: {cpu_time:.3f}s")
+
+if torch.cuda.is_available():
+    a_gpu=a_cpu.to("cuda")
+    b_gpu=b_cpu.to("cuda")
+    
+    torch.cuda.synchronize()
+    start=time.time()
+    c_gpu= a_gpu @ b_gpu
+    torch.cuda.synchronize()
+    gpu_time=time.time()-start
+    print(f"GPU: {gpu_time:.3f}s")
