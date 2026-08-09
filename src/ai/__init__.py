@@ -1,26 +1,35 @@
-import time
+class Vector:
+    def __init__(self, components):
+        self.components = list(components)
+        self.dim = len(self.components)
 
-import torch
+    def __add__(self, other):
+        return Vector([a + b for a, b in zip(self.components, other.components)])
 
-size=5000
+    def __sub__(self, other):
+        return Vector([a - b for a, b in zip(self.components, other.components)])
 
-#random normal
-a_cpu=torch.randn(size,size)
-b_cpu=torch.randn(size,size)
+    def dot(self, other):
+        return sum(a * b for a, b in zip(self.components, other.components))
 
-start=time.time()
-# @ is for cpu multiplication
-c_cpu= a_cpu @ b_cpu
-cpu_time=time.time()-start
-print(f"CPU: {cpu_time:.3f}s")
+    def magnitude(self):
+        return sum(x**2 for x in self.components) ** 0.5
 
-if torch.cuda.is_available():
-    a_gpu=a_cpu.to("cuda")
-    b_gpu=b_cpu.to("cuda")
-    
-    torch.cuda.synchronize()
-    start=time.time()
-    c_gpu= a_gpu @ b_gpu
-    torch.cuda.synchronize()
-    gpu_time=time.time()-start
-    print(f"GPU: {gpu_time:.3f}s")
+    def normalize(self):
+        mag = self.magnitude()
+        return Vector([x / mag for x in self.components])
+
+    def cosine_similarity(self, other):
+        return self.dot(other) / (self.magnitude() * other.magnitude())
+
+    def __repr__(self):
+        return f"Vector({self.components})"
+
+
+a = Vector([1, 2, 3])
+b = Vector([4, 5, 6])
+
+print(f"a + b = {a + b}")
+print(f"a · b = {a.dot(b)}")
+print(f"|a| = {a.magnitude():.4f}")
+print(f"cosine similarity = {a.cosine_similarity(b):.4f}")
