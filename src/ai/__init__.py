@@ -1,3 +1,8 @@
+import random
+
+
+# using this class to give lists vector properties.
+# Components is the arguments passed 
 class Vector:
     def __init__(self, components):
         self.components = list(components)
@@ -15,11 +20,11 @@ class Vector:
     def magnitude(self):
         return sum(x**2 for x in self.components) ** 0.5
 
-    def normalize(self):
+    def normalize(self): #vec with mag 1 in original dir
         mag = self.magnitude()
         return Vector([x / mag for x in self.components])
 
-    def cosine_similarity(self, other):
+    def cosine_similarity(self, other): 
         return self.dot(other) / (self.magnitude() * other.magnitude())
 
     def __repr__(self):
@@ -72,3 +77,13 @@ point = Vector([3, 1])
 rotated = rotation_90 @ point
 print(f"Original: {point}")
 print(f"Rotated 90°: {rotated}")
+
+
+random.seed(42)
+weights = Matrix([[random.gauss(0, 0.1) for _ in range(3)] for _ in range(2)])
+input_vector = Vector([1.0, 0.5, -0.3])
+
+output = weights @ input_vector
+print(f"Input (3D): {input_vector}")
+print(f"Output (2D): {output}")
+print("This is what a neural network layer does -- matrix multiplication.")
